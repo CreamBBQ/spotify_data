@@ -41,9 +41,11 @@ tracks <- tracks %>%
   arrange(., rank)
 
 
-################################# TOP SONGS ####################################
+############################# RECOMENDATIONS ####################################
 
-
+get_recommendations_all(tracks$id, valence = NULL) %>% 
+  select(name, artists, id) %>% 
+  mutate(artists = sapply(artists, process_element))
 
 ########################################################################################
 
