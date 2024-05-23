@@ -31,8 +31,7 @@ process_element <- function(element) {
 tracks <- tracks %>% 
   select(id, name, artists) %>% 
   mutate(rank = seq(1:10), 
-         artists = sapply(artists, process_element), 
-         date = fecha_yyyymm)
+         artists = sapply(artists, process_element))
 
 tracks <- tracks %>% 
   merge(., 
@@ -43,26 +42,25 @@ tracks <- tracks %>%
 
 ############################# RECOMENDATIONS ####################################
 
-get_recommendations_all(tracks$id, valence = NULL) %>% 
+recommendations <- get_recommendations_all(tracks$id, valence = NULL) %>% 
   select(name, artists, id) %>% 
   mutate(artists = sapply(artists, process_element))
 
-########################################################################################
+############################### ARTISTS ########################################
 
 
-artist_top <- get_my_top_artists_or_tracks(
+artists <- get_my_top_artists_or_tracks(
   type = "artists",
-  limit = 50,
+  limit = 10,
   offset = 0,
   time_range = "short_term",
   authorization = get_spotify_authorization_code(scope = "user-top-read"),
   include_meta_info = FALSE
 )
 
+artists <- artists %>% 
+  select(id, name, images) %>% 
+  mutate(rank = seq(1:10), 
+         images = sapply(images, function(x) x[[2]])[1, ])
 
-################################################################################
-ye <- get_artist_audio_features("kanye west")
-ye %>% 
-  filter(album_name == "ye") %>% 
-  select(artist_name, album_name, album_release_date, track_name, 
-         danceability, energy, loudness, speechiness, acousticness, valence)
+
